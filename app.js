@@ -1,14 +1,123 @@
 const stories = [
- {title:'Five places to find your winter wonder',url:'winter-destinations.html',tags:'winter snow alps japan finland austria norway canada'},
- {title:'Vietnam in December: a different kind of winter',url:'vietnam-december.html',tags:'vietnam december asia culture beach hanoi hoi an phu quoc'}
+  {
+    title: "Five places to find your winter wonder",
+    url: "winter-destinations.html",
+    tags: "winter snow alps japan finland austria norway canada",
+  },
+  {
+    title: "Vietnam in December: a different kind of winter",
+    url: "vietnam-december.html",
+    tags: "vietnam december asia culture beach hanoi hoi an phu quoc",
+  },
 ];
-const searchToggle=document.querySelector('[data-search-toggle]'), searchPanel=document.querySelector('.search-panel');
-searchToggle?.addEventListener('click',()=>{searchPanel.hidden=!searchPanel.hidden;searchToggle.setAttribute('aria-expanded',String(!searchPanel.hidden));if(!searchPanel.hidden)document.querySelector('#search').focus()});
-document.querySelector('#search')?.addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();const target=document.querySelector('.search-results');target.replaceChildren();if(q){const matches=stories.filter(s=>(s.title+' '+s.tags).toLowerCase().includes(q));if(!matches.length)target.textContent='No stories found. Try “winter” or “Vietnam”.';for(const s of matches){const a=document.createElement('a');a.href=s.url;a.textContent=s.title+' →';target.append(a)}}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&searchPanel&&!searchPanel.hidden){searchPanel.hidden=true;searchToggle.setAttribute('aria-expanded','false');searchToggle.focus()}});
-document.querySelector('.menu-toggle')?.addEventListener('click',e=>{const nav=document.querySelector('nav');nav.classList.toggle('collapsed');e.currentTarget.setAttribute('aria-expanded',String(!nav.classList.contains('collapsed')))});
-for(const btn of document.querySelectorAll('.filter'))btn.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false')});btn.classList.add('active');btn.setAttribute('aria-pressed','true');let n=0;document.querySelectorAll('.category-cards .card').forEach(c=>{c.hidden=btn.dataset.filter!=='all'&&c.dataset.category!==btn.dataset.filter;if(!c.hidden)n++});document.querySelector('.story-count').textContent=n+' '+(n===1?'story':'stories')+' to inspire your next journey'});
-document.querySelector('#sort')?.addEventListener('change',e=>{const grid=document.querySelector('.category-cards');const cards=[...grid.children];cards.sort((a,b)=>e.target.value==='title'?a.dataset.title.localeCompare(b.dataset.title):Number(b.dataset.order)-Number(a.dataset.order));cards.forEach(c=>grid.append(c))});
-const save=document.querySelector('[data-save]');const key='wander-saved-'+location.pathname.split('/').pop();function setSave(saved){save.textContent=saved?'✓ Saved to this browser':'♡ Save story';save.setAttribute('aria-pressed',String(saved))}if(save){try{setSave(localStorage.getItem(key)==='true')}catch{}save.addEventListener('click',()=>{const next=save.getAttribute('aria-pressed')!=='true';try{localStorage.setItem(key,String(next));setSave(next)}catch{document.querySelector('.status').textContent='Your browser could not save this story.'}})}
-document.querySelector('[data-share]')?.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(location.href);document.querySelector('.status').textContent='Story link copied.'}catch{document.querySelector('.status').textContent='Copy the page address from your browser to share this story.'}});
-if(document.querySelector('.reading-progress'))window.addEventListener('scroll',()=>{const max=document.documentElement.scrollHeight-innerHeight;document.querySelector('.reading-progress').style.width=(max>0?scrollY/max*100:0)+'%'},{passive:true});
+const searchToggle = document.querySelector("[data-search-toggle]"),
+  searchPanel = document.querySelector(".search-panel");
+searchToggle?.addEventListener("click", () => {
+  searchPanel.hidden = !searchPanel.hidden;
+  searchToggle.setAttribute("aria-expanded", String(!searchPanel.hidden));
+  if (!searchPanel.hidden) document.querySelector("#search").focus();
+});
+document.querySelector("#search")?.addEventListener("input", (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  const target = document.querySelector(".search-results");
+  target.replaceChildren();
+  if (q) {
+    const matches = stories.filter((s) =>
+      (s.title + " " + s.tags).toLowerCase().includes(q),
+    );
+    if (!matches.length)
+      target.textContent = "No stories found. Try “winter” or “Vietnam”.";
+    for (const s of matches) {
+      const a = document.createElement("a");
+      a.href = s.url;
+      a.textContent = s.title + " →";
+      target.append(a);
+    }
+  }
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && searchPanel && !searchPanel.hidden) {
+    searchPanel.hidden = true;
+    searchToggle.setAttribute("aria-expanded", "false");
+    searchToggle.focus();
+  }
+});
+document.querySelector(".menu-toggle")?.addEventListener("click", (e) => {
+  const nav = document.querySelector("nav");
+  nav.classList.toggle("collapsed");
+  e.currentTarget.setAttribute(
+    "aria-expanded",
+    String(!nav.classList.contains("collapsed")),
+  );
+});
+for (const btn of document.querySelectorAll(".filter"))
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter").forEach((b) => {
+      b.classList.remove("active");
+      b.setAttribute("aria-pressed", "false");
+    });
+    btn.classList.add("active");
+    btn.setAttribute("aria-pressed", "true");
+    let n = 0;
+    document.querySelectorAll(".category-cards .card").forEach((c) => {
+      c.hidden =
+        btn.dataset.filter !== "all" &&
+        c.dataset.category !== btn.dataset.filter;
+      if (!c.hidden) n++;
+    });
+    document.querySelector(".story-count").textContent =
+      n +
+      " " +
+      (n === 1 ? "story" : "stories") +
+      " to inspire your next journey";
+  });
+document.querySelector("#sort")?.addEventListener("change", (e) => {
+  const grid = document.querySelector(".category-cards");
+  const cards = [...grid.children];
+  cards.sort((a, b) =>
+    e.target.value === "title"
+      ? a.dataset.title.localeCompare(b.dataset.title)
+      : Number(b.dataset.order) - Number(a.dataset.order),
+  );
+  cards.forEach((c) => grid.append(c));
+});
+const save = document.querySelector("[data-save]");
+const key = "wander-saved-" + location.pathname.split("/").pop();
+function setSave(saved) {
+  save.textContent = saved ? "✓ Saved to this browser" : "♡ Save story";
+  save.setAttribute("aria-pressed", String(saved));
+}
+if (save) {
+  try {
+    setSave(localStorage.getItem(key) === "true");
+  } catch {}
+  save.addEventListener("click", () => {
+    const next = save.getAttribute("aria-pressed") !== "true";
+    try {
+      localStorage.setItem(key, String(next));
+      setSave(next);
+    } catch {
+      document.querySelector(".status").textContent =
+        "Your browser could not save this story.";
+    }
+  });
+}
+document.querySelector("[data-share]")?.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(location.href);
+    document.querySelector(".status").textContent = "Story link copied.";
+  } catch {
+    document.querySelector(".status").textContent =
+      "Copy the page address from your browser to share this story.";
+  }
+});
+if (document.querySelector(".reading-progress"))
+  window.addEventListener(
+    "scroll",
+    () => {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      document.querySelector(".reading-progress").style.width =
+        (max > 0 ? (scrollY / max) * 100 : 0) + "%";
+    },
+    { passive: true },
+  );
