@@ -496,7 +496,6 @@ select {
 .article-layout {
   display: grid;
   grid-template-columns: 350px minmax(0, 700px);
-  height: 650px;
   gap: 55px;
   justify-content: center;
   margin-top: 40px;
